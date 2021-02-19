@@ -1,21 +1,25 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-
+import 'react-native-gesture-handler';
+import React, { useEffect, useState } from 'react';
+import UserProvider from './libs/providers/userProvider';
+import RootStack from './routes/rootStack';
+import { StatusBar, View } from 'react-native';
+import * as Font from 'expo-font';
+import { MeyProvider } from 'mey';
 export default function App() {
+  const [fontLoaded, setFontLoaded] = useState(false);
+  useEffect(() => {
+    Font.loadAsync({
+      'noto-bold': require('./assets/fonts/NotoSansJP-Bold.otf'),
+      'noto-reg': require('./assets/fonts/NotoSansJP-Regular.otf'),
+    }).then(() => setFontLoaded(true));
+  });
+  if (!fontLoaded) return <View>Font Loading</View>;
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <MeyProvider BaseURL='http://localhost:4000'>
+      <UserProvider>
+        <StatusBar barStyle='light-content' backgroundColor='#F03955' />
+        <RootStack />
+      </UserProvider>
+    </MeyProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
