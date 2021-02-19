@@ -2,5 +2,5 @@
 
 ## Tools
 
-- client => React Native (Expo), TypeScript & React Navigation 5
+- frontend => React Native (Expo), TypeScript & React (Native) Router
 - server => Node (Express), TypeScript & [Tru ID SIMCheck API](https://tru.id/docs/sim-check)
