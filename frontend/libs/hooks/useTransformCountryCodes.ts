@@ -1,6 +1,8 @@
 import { useRef } from 'react';
 import { regions, callingCountries } from 'country-data';
 const useTransformCountryCodes = () => {
+  // this hook transforms data from the country-data package returns just calling code
+  // and country code for europe and North America
   const NorthAmericanCallingCodes = useRef<
     Array<{ calling_code: string; country_code: string }>
   >([{ calling_code: '', country_code: '' }]);
