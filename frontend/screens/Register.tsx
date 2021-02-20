@@ -1,11 +1,22 @@
 import { Picker } from '@react-native-picker/picker';
 import { useMutation } from 'mey';
-import React, { useContext, useState } from 'react';
-import { Platform, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import {
+  Platform,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { transformPhoneNumber } from '../libs/helpers/transformPhoneNumber';
 import useResponsiveScreen from '../libs/hooks/useResponsiveScreen';
 import useTransformCountryCodes from '../libs/hooks/useTransformCountryCodes';
 import { UserContext } from '../libs/providers/userProvider';
+import FlashMessage, { showMessage } from 'react-native-flash-message';
+import { useHistory } from '../react-router';
+import { useHistory as useNativeHistory } from '../react-router.native';
 const web = Platform.OS === 'web';
 const Register = () => {
   const { isAuthenticated, setIsAuthenticated } = useContext(UserContext);
@@ -13,13 +24,31 @@ const Register = () => {
   const { responsiveWidth } = useResponsiveScreen();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [countryCode, setCountryCode] = useState('');
-  const [z, setZ] = useState(false);
+  const history = useHistory();
+  const nativeHistory = useNativeHistory();
   const callingCode = useTransformCountryCodes();
   const webFontSize = web ? responsiveWidth(7) : responsiveWidth(30);
+  useEffect(() => {
+    if (data?.status === 'COMPLETED') {
+      setIsAuthenticated(data.no_sim_change);
+    } else if (data?.status === 'ERROR') {
+      showMessage({
+        message: 'An Error Occurred. Please Try Again Later',
+        type: 'danger',
+        style: styles.container,
+      });
+    }
+  }, [data]);
   const onPressHandler = () => {
-    console.log('pressed');
-  };
+    const body = {
+      phone_number: transformPhoneNumber(countryCode, phoneNumber),
+    };
 
+    handleRequest(body);
+  };
+  if (isAuthenticated) {
+    web ? history.push('/feed') : nativeHistory.push('/feed');
+  }
   return (
     <View style={styles.container}>
       <Text style={{ fontSize: webFontSize, fontFamily: 'noto-bold' }}>
@@ -49,11 +78,12 @@ const Register = () => {
         />
       </View>
 
-      <TouchableWithoutFeedback onPress={onPressHandler}>
+      <TouchableWithoutFeedback disabled={loading} onPress={onPressHandler}>
         <View style={styles.button}>
           <Text style={styles.buttonText}>Register</Text>
         </View>
       </TouchableWithoutFeedback>
+      <FlashMessage />
     </View>
   );
 };
@@ -62,6 +92,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: !web ? StatusBar?.currentHeight! + 10 : 0,
   },
   formGroup: {
     flexDirection: 'row',
@@ -71,7 +102,8 @@ const styles = StyleSheet.create({
   },
   textInput: {
     padding: 15,
-    border: '1px solid #000',
+    borderColor: '#20232a',
+    borderWidth: 3,
     elevation: 5,
     height: 50,
     backgroundColor: '#fff',
@@ -84,7 +116,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#e67e22',
     borderRadius: 8,
     marginTop: '10px',
-    cursor: 'pointer',
+    // cursor: 'pointer',
   },
   buttonText: {
     color: '#fff',

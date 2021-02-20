@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import {
   ImageBackground,
   Platform,
+  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -9,17 +10,18 @@ import {
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import useResponsiveScreen from '../libs/hooks/useResponsiveScreen';
 import { useHistory } from '../react-router';
+import { useHistory as useNativeHistory } from '../react-router.native';
 const web = Platform.OS === 'web';
 const Splash = () => {
   const history = useHistory();
+  const nativeHistory = useNativeHistory();
   const img = require('../assets/jellyfish.gif');
   const { responsiveWidth } = useResponsiveScreen();
 
   const webFontSize = web ? responsiveWidth(7) : responsiveWidth(30);
 
   const onPressHandler = () => {
-    console.log('pressed');
-    history.push('/register');
+    web ? history.push('/register') : nativeHistory.push('/register');
   };
   return (
     <View style={styles.container}>
@@ -41,7 +43,7 @@ const Splash = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
+    marginTop: !web ? StatusBar?.currentHeight! + 10 : 0,
     justifyContent: 'center',
   },
   image: {
@@ -57,7 +59,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#e67e22',
     borderRadius: 8,
     marginTop: '10px',
-    cursor: 'pointer',
+    // cursor: 'pointer',
     width: web ? '150%' : '80%',
   },
   buttonText: {

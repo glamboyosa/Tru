@@ -1,4 +1,4 @@
-// this hook is necessary because on web spreading overrides stylesheet.create but we would still like a somewhat dynamic value
+// this function is necessary because on web spreading overrides stylesheet.create but we would still like a somewhat dynamic value
 // relative to original width. It won't update when user resizes the browser unfortunately but still
 // ok for responsive WD as it's the width relative to device width and resizing is unlikely
 // custom hook is preferred
