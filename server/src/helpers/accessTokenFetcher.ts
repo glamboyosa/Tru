@@ -3,7 +3,6 @@ import { config } from 'dotenv';
 import fetch from 'node-fetch';
 import btoa from 'btoa';
 config();
-config();
 // create access token
 const createAccessToken = async () => {
   // make request body acceptable by application/x-www-form-urlencoded

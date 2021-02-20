@@ -4,14 +4,8 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import { config } from 'dotenv';
 import { __PROD__ } from './helpers/constants';
-import {
-  OAuthResponseType,
-  SIMCheckResponseType,
-  SIMCheckType,
-} from './helpers/types';
+import { SIMCheckResponseType, SIMCheckType } from './helpers/types';
 import fetch from 'node-fetch';
-import FormData from 'form-data';
-import btoa from 'btoa';
 import { createAccessToken } from './helpers/accessTokenFetcher';
 
 const app = express();
@@ -29,7 +23,6 @@ app.post('/api/simcheck', async (req, res) => {
 
     // perform simcheck with access token and phone number
     const body = JSON.stringify({ phone_number });
-    console.log(body);
     const response = await fetch(
       `${process.env.BASE_URL}/sim_check/v0.1/checks`,
       {
@@ -41,7 +34,6 @@ app.post('/api/simcheck', async (req, res) => {
         },
       },
     );
-    // console.log(resp);
     const {
       no_sim_change,
       status,
