@@ -1,6 +1,7 @@
 import { OAuthResponseType } from './types';
 import { config } from 'dotenv';
 import fetch from 'node-fetch';
+import btoa from 'btoa';
 config();
 config();
 // create access token
