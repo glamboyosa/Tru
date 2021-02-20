@@ -33,7 +33,7 @@ tru projects:create
 It will create a Tru.json file which contains credentials for the initialized project
 
 - copy over the .env.example file to a new .env file and replace the values of TRU CLIENT\*ID and TRU_CLIENT_SECRET with the client_id and client_secret values as that's what you'll use to make API calls. Also replace the BASE_URL with the host value specified [here](https://tru.id/docs/sim-check/guide#making-a-simcheck-api-call)
-  **if** the data residency you selected while creating an account
+  **if** the data residency you selected while creating an account is not eu
 
 ## Starting Project
 
