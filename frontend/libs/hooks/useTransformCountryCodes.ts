@@ -76,22 +76,26 @@ const useTransformCountryCodes = () => {
   }
   // remove initial state from regions calling code
 
-  const lastIndex = NorthAmericanCallingCodes.current.length - 1;
+  const lastIndexNA = NorthAmericanCallingCodes.current.length - 1;
+  const lastIndexWE = WesternEuropeCallingCodes.current.length -1;
+  const lastIndexNE = NothernEuropeCallingCodes.current.length - 1;
+  const lastIndexSE = SouthernEuropeCallingCodes.current.length - 1;
+
   NorthAmericanCallingCodes.current = NorthAmericanCallingCodes.current.splice(
     1,
-    lastIndex,
+    lastIndexNA,
   );
   WesternEuropeCallingCodes.current = WesternEuropeCallingCodes.current.splice(
     1,
-    lastIndex,
+    lastIndexWE,
   );
   NothernEuropeCallingCodes.current = NothernEuropeCallingCodes.current.splice(
     1,
-    lastIndex,
+    lastIndexNE,
   );
   SouthernEuropeCallingCodes.current = SouthernEuropeCallingCodes.current.splice(
     1,
-    lastIndex,
+    lastIndexSE,
   );
   return [
     ...NorthAmericanCallingCodes.current,
