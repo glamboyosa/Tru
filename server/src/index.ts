@@ -34,12 +34,9 @@ app.post('/api/simcheck', async (req, res) => {
         },
       },
     );
-    const {
-      no_sim_change,
-      status,
-    }: SIMCheckResponseType = await response.json();
+    const data: SIMCheckResponseType = await response.json();
 
-    res.status(200).send({ status, no_sim_change });
+    res.status(200).send({ data });
   } catch (e) {
     console.log(e.message);
     throw new Error(e.message);

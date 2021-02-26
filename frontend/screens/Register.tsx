@@ -17,10 +17,22 @@ import { UserContext } from '../libs/providers/userProvider';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
 import { useHistory } from '../react-router';
 import { useHistory as useNativeHistory } from '../react-router.native';
+import Label from '../components/label';
+import { SIMCheckResponseType } from '../libs/types/simCheckResponse';
 const web = Platform.OS === 'web';
+type useMutationType = {
+  loading: boolean;
+  handleRequest: (body: any) => void;
+  data: { data: SIMCheckResponseType };
+};
 const Register = () => {
-  const { isAuthenticated, setIsAuthenticated } = useContext(UserContext);
-  const { loading, handleRequest, data } = useMutation('/api/simcheck', 'post');
+  const { isAuthenticated, setIsAuthenticated, setResponse } = useContext(
+    UserContext,
+  );
+  const { loading, handleRequest, data }: useMutationType = useMutation(
+    '/api/simcheck',
+    'post',
+  );
   const { responsiveWidth } = useResponsiveScreen();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [countryCode, setCountryCode] = useState('');
@@ -29,9 +41,10 @@ const Register = () => {
   const callingCode = useTransformCountryCodes();
   const webFontSize = web ? responsiveWidth(7) : responsiveWidth(30);
   useEffect(() => {
-    if (data?.status === 'COMPLETED') {
-      setIsAuthenticated(data.no_sim_change);
-    } else if (data?.status === 'ERROR') {
+    if (data?.data?.status === 'COMPLETED') {
+      setIsAuthenticated(data.data.no_sim_change);
+      setResponse(data.data);
+    } else if (data?.data?.status === 'ERROR') {
       showMessage({
         message: 'An Error Occurred. Please Try Again Later',
         type: 'danger',
@@ -55,27 +68,33 @@ const Register = () => {
         {' '}
         Register to get started
       </Text>
-      <View style={styles.formGroup}>
-        <Picker
-          selectedValue={countryCode}
-          style={{ height: 50, width: 100, fontFamily: 'noto-reg' }}
-          onValueChange={(itemValue) => setCountryCode(itemValue)}
-        >
-          <Picker.Item label="Select Country Code" value="" />
-          {callingCode.map((el, i) => (
-            <Picker.Item
-              key={i}
-              label={`${el.country_code} ${el.calling_code}`}
-              value={el.calling_code}
-            />
-          ))}
-        </Picker>
-        <TextInput
-          style={styles.textInput}
-          placeholder="ex. (415) 555-0100"
-          onChangeText={(text) => setPhoneNumber(text)}
-          value={phoneNumber}
-        />
+      <View style={styles.form}>
+        <View style={styles.formGroup}>
+          <Label label="Country Code" />
+          <Picker
+            selectedValue={countryCode}
+            style={{ height: 50, width: 100, fontFamily: 'noto-reg' }}
+            onValueChange={(itemValue) => setCountryCode(itemValue)}
+          >
+            <Picker.Item label="Select Country Code" value="" />
+            {callingCode.map((el, i) => (
+              <Picker.Item
+                key={i}
+                label={`${el.country_code} ${el.calling_code}`}
+                value={el.calling_code}
+              />
+            ))}
+          </Picker>
+        </View>
+        <View style={styles.formGroup}>
+          <Label label="Phone Number" />
+          <TextInput
+            style={styles.textInput}
+            placeholder="ex. (415) 555-0100"
+            onChangeText={(text) => setPhoneNumber(text)}
+            value={phoneNumber}
+          />
+        </View>
       </View>
 
       <TouchableWithoutFeedback disabled={loading} onPress={onPressHandler}>
@@ -94,11 +113,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: !web ? StatusBar?.currentHeight! + 10 : 0,
   },
-  formGroup: {
+  form: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 10,
+  },
+  formGroup: {
+    flexDirection: 'column',
   },
   textInput: {
     padding: 15,

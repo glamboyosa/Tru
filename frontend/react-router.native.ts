@@ -3,5 +3,6 @@ export {
   Switch,
   Route,
   Link,
+  Redirect as NativeRedirect,
   useHistory
 } from 'react-router-native';
